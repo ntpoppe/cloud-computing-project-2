@@ -5,18 +5,21 @@
   <style>
     body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
     form { display: flex; flex-direction: column; gap: 8px; width: 250px; }
-    input { padding: 6px; }
+    input, button { padding: 6px; font: inherit; height: 32px; box-sizing: border-box; }
   </style>
 </head>
 <body>
-  <form method="POST" action="/register">
+  <form method="POST" action="/register" enctype="multipart/form-data">
     <input type="text" name="username" placeholder="Username">
     <input type="password" name="password" placeholder="Password">
     <input type="text" name="first_name" placeholder="First Name">
     <input type="text" name="last_name" placeholder="Last Name">
     <input type="text" name="email" placeholder="Email">
     <input type="text" name="address" placeholder="Address">
+    <label for="file">Upload Limerick.txt</label>
+    <input type="file" name="file" accept=".txt">
     <input type="submit" value="Register">
+    <button type="button" onclick="location.href='/login'">Login</button>
   </form>
 </body>
 </html>

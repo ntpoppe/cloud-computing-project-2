@@ -1,17 +1,31 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, abort
 import sqlite3
 import os
 
 app = Flask(__name__)
 
+BASE = os.path.dirname(os.path.abspath(__file__))
+db = os.path.join(BASE, 'flask_app_db.db')
+UPLOADS = os.path.join(BASE, 'uploads')
+
 # SQLite setup
-db = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'flask_app_db.db')
 conn = sqlite3.connect(db)
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS users 
              (username TEXT, password TEXT, first_name TEXT, last_name TEXT, email TEXT, address TEXT)''')
 conn.commit()
 conn.close()
+
+def user_dir(username):
+    return os.path.join(UPLOADS, username)
+
+def get_upload(username):
+    d = user_dir(username)
+    if os.path.isdir(d):
+        files = os.listdir(d)
+        if files:
+            return files[0]
+    return None
 
 @app.route('/')
 def index():
@@ -33,7 +47,32 @@ def register():
     conn.commit()
     conn.close()
 
+    f = request.files.get('file')
+    if f and f.filename:
+        d = user_dir(username)
+        os.makedirs(d, exist_ok=True)
+        f.save(os.path.join(d, f.filename))
+
     return redirect(url_for('profile', username=username))
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+    user = c.fetchone()
+    conn.close()
+
+    if user:
+        return redirect(url_for('profile', username=username))
+    return render_template('login.html', error="Invalid username or password")
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -43,7 +82,20 @@ def profile(username):
     user = c.fetchone()
     conn.close()
 
-    return render_template('profile.html', user=user)
+    filename = get_upload(username)
+    word_count = None
+    if filename:
+        with open(os.path.join(user_dir(username), filename), encoding='utf-8', errors='ignore') as fh:
+            word_count = len(fh.read().split())
+
+    return render_template('profile.html', user=user, filename=filename, word_count=word_count)
+
+@app.route('/download/<username>')
+def download(username):
+    filename = get_upload(username)
+    if not filename:
+        abort(404)
+    return send_from_directory(user_dir(username), filename, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

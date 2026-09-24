@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile</title>
+  <style>
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+    div { display: flex; flex-direction: column; gap: 8px; width: 250px; }
+    button { padding: 6px; font: inherit; height: 32px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div>
+    {% if user %}
+      <h2>{{ user[2] }} {{ user[3] }}</h2>
+      <p>Username: {{ user[0] }}</p>
+      <p>Email: {{ user[4] }}</p>
+      <p>Address: {{ user[5] }}</p>
+      {% if filename %}
+        <p>File: {{ filename }}</p>
+        <p>Word count: {{ word_count }}</p>
+        <button onclick="location.href='/download/{{ user[0] }}'">Download File</button>
+      {% endif %}
+    {% else %}
+      <p>User not found.</p>
+    {% endif %}
+    <button onclick="location.href='/login'">Logout</button>
+  </div>
+</body>
+</html>

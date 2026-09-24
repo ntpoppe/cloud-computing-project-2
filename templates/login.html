@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+    form { display: flex; flex-direction: column; gap: 8px; width: 250px; }
+    input, button { padding: 6px; font: inherit; height: 32px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <form method="POST" action="/login">
+    <input type="text" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <input type="submit" value="Login">
+    <button type="button" onclick="location.href='/'">Register</button>
+    {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+  </form>
+</body>
+</html>
