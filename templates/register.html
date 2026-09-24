@@ -1,9 +1,22 @@
-<form method="POST" action="/register">
-    Username: <input type="text" name="username"><br>
-    Password: <input type="password" name="password"><br>
-    First Name: <input type="text" name="first_name"><br>
-    Last Name: <input type="text" name="last_name"><br>
-    Email: <input type="text" name="email"><br>
-    Address: <input type="text" name="address"><br>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+    form { display: flex; flex-direction: column; gap: 8px; width: 250px; }
+    input { padding: 6px; }
+  </style>
+</head>
+<body>
+  <form method="POST" action="/register">
+    <input type="text" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <input type="text" name="first_name" placeholder="First Name">
+    <input type="text" name="last_name" placeholder="Last Name">
+    <input type="text" name="email" placeholder="Email">
+    <input type="text" name="address" placeholder="Address">
     <input type="submit" value="Register">
-</form>
+  </form>
+</body>
+</html>

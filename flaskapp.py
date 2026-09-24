@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+import os
 
 app = Flask(__name__)
 
 # SQLite setup
-conn = sqlite3.connect('flask_app_db.db')
+db = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'flask_app_db.db')
+conn = sqlite3.connect(db)
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS users 
              (username TEXT, password TEXT, first_name TEXT, last_name TEXT, email TEXT, address TEXT)''')
@@ -24,7 +26,7 @@ def register():
     email = request.form['email']
     address = request.form['address']
 
-    conn = sqlite3.connect('users.db')
+    conn = sqlite3.connect(db)
     c = conn.cursor()
     c.execute("INSERT INTO users (username, password, first_name, last_name, email, address) VALUES (?, ?, ?, ?, ?, ?)",
               (username, password, first_name, last_name, email, address))
@@ -35,7 +37,7 @@ def register():
 
 @app.route('/profile/<username>')
 def profile(username):
-    conn = sqlite3.connect('users.db')
+    conn = sqlite3.connect(db)
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE username=?", (username,))
     user = c.fetchone()
